@@ -1,12 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, Button } from 'react-native';
+import Map from './components/Map'
 import Coordinates from './components/Coordinates';
-import MapView from 'react-native-maps';
-import { useState, useEffect } from 'react'
 import * as Location from 'expo-location';
-
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-web';
 
 export default function App() {
-  const [location, setLocation] = useState({
+
+  const [location, setLocation] = React.useState({
     "coords": {
       "latitude": null,
       "longitude": null
@@ -15,10 +17,9 @@ export default function App() {
   let currentLocation;
   let isShowUserLocation = true;
 
-  useEffect(() => {
+  React.useEffect(() => {
     let interval;
     const getPermissions = async () => {
-
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         getPermissions();
@@ -36,37 +37,62 @@ export default function App() {
     }
   }, []);
 
+  const showMap = () => {
+    return (<Map />)
+  }
 
-  console.log('Широта:' + JSON.stringify(location))
-  console.log(isShowUserLocation)
-  // console.log('Долгота:' + location.coords.longitude)
+  // console.log('Широта:' + JSON.stringify(location))
+  // console.log(isShowUserLocation)
+  // // console.log('Долгота:' + location.coords.longitude)
+
   return (
     <>
-      {(location.coords.latitude === null) ?
-        <View style={styles.container}>
-          <Text style={styles.preloader}>Запуск...</Text>
-        </View>
-        :
-        <View style={styles.container}>
-          <Coordinates
-            latitude={location.coords.latitude}
-            longitude={location.coords.longitude}
-          />
-          <MapView style={styles.map}
-            initialRegion={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01
-            }}
-            showsUserLocation={isShowUserLocation}
-            showsMyLocationButton={true}
-            userLocationUpdateInterval={1000}
-          />
-        </View>
 
-      }
+            {/* <Coordinates
+              latitude={location.coords.latitude}
+              longitude={location.coords.longitude}
+            />
+            <Button
+              onPress={showMap}
+              title='Показать карту'
+            /> */}
+            <Map />
+            <StatusBar style='auto' />
+
+
     </>
+
+
+
+
+    // <>
+    //   {(location.coords.latitude === null) ?
+    //     <View style={styles.container}>
+    //       <Text style={styles.preloader}>Запуск...</Text>
+    //     </View>
+    //     :
+    //     <View style={styles.container}>
+
+    //       <Coordinates
+    //         latitude={location.coords.latitude}
+    //         longitude={location.coords.longitude}
+    //       />
+    //       {/* <MapView style={styles.map}
+    //         initialRegion={{
+    //           latitude: location.coords.latitude,
+    //           longitude: location.coords.longitude,
+    //           latitudeDelta: 0.01,
+    //           longitudeDelta: 0.01
+    //         }}
+    //         showsUserLocation={isShowUserLocation}
+    //         showsMyLocationButton={true}
+    //         userLocationUpdateInterval={1000}
+    //       /> */}
+
+    //     </View>
+
+    //   }
+    // </>
   );
 }
 
